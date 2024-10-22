@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Games Hub</title>
+    <title>Wordly - Browser Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,63 +12,201 @@
             color: #333;
             margin-top: 50px;
         }
-        .game-section {
-            display: none;
-        }
-        .active {
-            display: block;
+        input {
+            padding: 10px;
+            font-size: 18px;
+            margin: 10px;
+            width: 200px;
         }
         button {
             padding: 10px 20px;
             font-size: 18px;
             background-color: #4CAF50;
-            color: rgb(69, 61, 225);
+            color: white;
             border: none;
             cursor: pointer;
-            margin: 10px;
         }
         button:hover {
             background-color: #45a049;
         }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        .word-feedback {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Games Hub</h1>
-    <p>Select a game to play:</p>
-    
-    <button><a href="index.html">Play wordly </a></button>
-    <button onclick="showGame('horror')">Play Horror Game</button>
-    <button onclick="showGame('another')">Play Another Game</button>
-    <br>
-    <button><a href="contactus.html">contact us </a></button>
+    <h1>Welcome to Wordly</h1>
+    <p>Guess the word by choosing a word length and making guesses!</p>
 
-    <div id="wordly" class="game-section">
-        <h2>Wordly Game</h2>
-        <!-- Insert your Wordly game content here -->
-        <button onclick="showGame()">Back to Menu</button>
+    <label for="word-length">Choose word length:</label>
+    <select id="word-length">
+        <option value="4">4 letters</option>
+        <option value="5">5 letters</option>
+        <option value="6">6 letters</option>
+    </select>
+
+    <div>
+        <input type="text" id="guess" placeholder="Enter your guess">
+        <button onclick="makeGuess()">Submit Guess</button>
     </div>
 
-    <div id="horror" class="game-section">
-        <h2>Horror Game</h2>
-        <!-- Insert your Horror game content here -->
-        <button onclick="showGame()">Back to Menu</button>
-    </div>
+    <button class="hidden" id="reset-btn" onclick="startGame()">Play Again</button>
 
-    <div id="another" class="game-section">
-        <h2>Another Game</h2>
-        <!-- Insert your Another game content here -->
-        <button onclick="showGame()">Back to Menu</button>
-    </div>
-    
+    <div id="result"></div>
+
+    <canvas id="confetti-canvas" class="hidden"></canvas>
 
     <script>
-        function showGame(game) {
-            document.querySelectorAll('.game-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            if (game) {
-                document.getElementById(game).classList.add('active');
+        // Hardcoded word lists for different lengths
+        const wordList4 = ['tree', 'code', 'game', 'play', 'word'];
+        const wordList5 = ['apple', 'bread', 'table', 'plane', 'water'];
+        const wordList6 = ['planet', 'system', 'rocket', 'people', 'butter'];
+  
+        let secretWord = '';
+        let attempts = 5; // Limit attempts to 5
+
+        // Function to pick a random word based on word length
+        function pickWord(wordLength) {
+            if (wordLength == 4) {
+                return wordList4[Math.floor(Math.random() * wordList4.length)];
+            } else if (wordLength == 5) {
+                return wordList5[Math.floor(Math.random() * wordList5.length)];
+            } else if (wordLength == 6) {
+                return wordList6[Math.floor(Math.random() * wordList6.length)];
             }
+        }
+
+        // Function to start the game by picking a word
+        function startGame() {
+            const wordLength = document.getElementById('word-length').value;
+            secretWord = pickWord(wordLength);
+            attempts = 6;
+            document.getElementById('result').innerHTML = `You have ${attempts} attempts to guess a ${wordLength}-letter word.`;
+            document.getElementById('guess').value = ''; // Clear input
+            document.getElementById('reset-btn').classList.add('hidden'); // Hide reset button
+            stopConfetti(); // Stop confetti if it was running
+            document.getElementById('confetti-canvas').classList.add('hidden'); // Hide confetti
+        }
+
+        // Function to compare the guess and give feedback
+        function compareWords(secretWord, guess) {
+            let result = '';
+            for (let i = 0; i < secretWord.length; i++) {
+                if (guess[i] === secretWord[i]) {
+                    result += `[${guess[i]}]`;  // Correct letter in correct position
+                } else if (secretWord.includes(guess[i])) {
+                    result += `(${guess[i]})`;  // Correct letter in wrong position
+                } else {
+                    result += guess[i];  // Incorrect letter
+                }
+            }
+            return result;
+        }
+
+        // Function to handle the player's guess
+        function makeGuess() {
+            const guess = document.getElementById('guess').value.toLowerCase();
+            const wordLength = document.getElementById('word-length').value;
+
+            if (guess.length !== parseInt(wordLength)) {
+                document.getElementById('result').innerHTML = `Please enter a ${wordLength}-letter word.`;
+                return;
+            }
+
+            // Check if the player's guess matches the secret word
+            if (guess === secretWord) {
+                document.getElementById('result').innerHTML = `Congratulations! You've guessed the word "${secretWord}" correctly!`;
+                secretWord = '';  // Reset the secret word for the next game
+                document.getElementById('reset-btn').classList.remove('hidden'); // Show reset button
+                startConfetti(); // Trigger celebration
+            } else {
+                attempts--;
+                if (attempts > 0) {
+                    const feedback = compareWords(secretWord, guess);
+                    document.getElementById('result').innerHTML = `
+                        Result: ${feedback} <br>
+                        You have ${attempts} attempts remaining.
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `Game over! The word was "${secretWord}".`;
+                    secretWord = '';  // Reset the secret word for the next game
+                    document.getElementById('reset-btn').classList.remove('hidden'); // Show reset button
+                }
+            }
+
+            // Clear the input field for the next guess
+            document.getElementById('guess').value = '';
+        }
+
+        // Start a new game on page load
+        window.onload = startGame;
+
+        // Confetti Celebration
+        let confettiInterval;
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.classList.remove('hidden'); // Show confetti canvas
+
+            const ctx = canvas.getContext('2d');
+            const confettiCount = 300;
+            const confetti = [];
+
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 5 + 2, // radius
+                    d: Math.random() * confettiCount, // density
+                    color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.7)`,
+                    tilt: Math.random() * 10 - 10,
+                    tiltAngle: Math.random() * Math.PI * 2,
+                    tiltAngleIncrement: Math.random() * 0.07 + 0.05,
+                });
+            }
+
+            function drawConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confetti.forEach((confetto, i) => {
+                    confetto.tiltAngle += confetto.tiltAngleIncrement;
+                    confetto.x += Math.sin(confetto.d) * 0.5;
+                    confetto.y += (Math.cos(confetto.d) + confetto.r / 2) * 0.5;
+                    confetto.tilt = Math.sin(confetto.tiltAngle) * 15;
+
+                    if (confetto.y > canvas.height) {
+                        confetti[i] = {
+                            ...confetto,
+                            x: Math.random() * canvas.width,
+                            y: -10,
+                        };
+                    }
+
+                    ctx.beginPath();
+                    ctx.lineWidth = confetto.r;
+                    ctx.strokeStyle = confetto.color;
+                    ctx.moveTo(confetto.x + confetto.tilt + confetto.r, confetto.y);
+                    ctx.lineTo(confetto.x + confetto.tilt, confetto.y + confetto.tilt + confetto.r);
+                    ctx.stroke();
+                });
+            }
+
+            confettiInterval = setInterval(drawConfetti, 20);
+        }
+
+        function stopConfetti() {
+            clearInterval(confettiInterval);
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     </script>
 </body>
