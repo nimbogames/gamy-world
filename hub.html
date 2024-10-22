@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            color: #333;
+            margin-top: 50px;
+        }
+        .game-section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: rgb(69, 61, 225);
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Games Hub</h1>
+    <p>Select a game to play:</p>
+    
+    <button><a href="game 2.html">Play wordly </a></button>
+    <button onclick="showGame('horror')">Play Horror Game</button>
+    <button onclick="showGame('another')">Play Another Game</button>
+    <br>
+    <button><a href="contactus.html">contact us </a></button>
+
+    <div id="wordly" class="game-section">
+        <h2>Wordly Game</h2>
+        <!-- Insert your Wordly game content here -->
+        <button onclick="showGame()">Back to Menu</button>
+    </div>
+
+    <div id="horror" class="game-section">
+        <h2>Horror Game</h2>
+        <!-- Insert your Horror game content here -->
+        <button onclick="showGame()">Back to Menu</button>
+    </div>
+
+    <div id="another" class="game-section">
+        <h2>Another Game</h2>
+        <!-- Insert your Another game content here -->
+        <button onclick="showGame()">Back to Menu</button>
+    </div>
+    
+
+    <script>
+        function showGame(game) {
+            document.querySelectorAll('.game-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            if (game) {
+                document.getElementById(game).classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
