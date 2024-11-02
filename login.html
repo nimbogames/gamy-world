@@ -5,64 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Coming Soon</title>
     <style>
-        /* Basic Styling */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; background-color: #1a1a2e; color: #fff; }
-        .container { text-align: center; max-width: 400px; padding: 30px; background-color: #16213e; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); }
-        h1 { font-size: 2rem; margin-bottom: 20px; color: #e94560; }
-        p { font-size: 1.1rem; margin-bottom: 20px; color: #b1b1b1; }
-        .notify-form { margin-top: 20px; }
-        .notify-input, .notify-button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: 1px solid #ddd; box-sizing: border-box; }
-        .notify-input { color: #333; }
-        .notify-button { background-color: #e94560; color: #fff; border: none; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
-        .notify-button:hover { background-color: #f26b8a; }
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a2e;
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+            max-width: 400px;
+            padding: 30px;
+            background-color: #16213e;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #e94560;
+        }
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #b1b1b1;
+        }
+        .countdown {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e600f;
+        }
+        .notify-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #e94560;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .notify-button:hover {
+            background-color: #f26b8a;
+        }
     </style>
-    <!-- Include EmailJS SDK -->
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script>
-         (function(){
-        emailjs.init("ffRveR1dc_0mAv1w3"); // Replace with your EmailJS user ID
-    })();
-    </script>
 </head>
 <body>
 
 <div class="container">
     <h1>Login Coming Soon</h1>
-    <p>Our new login page is on its way! Sign up to be notified when we go live.</p>
-
-    <!-- Email Notification Form -->
-    <form class="notify-form" id="notifyForm">
-        <input type="email" class="notify-input" id="userEmail" placeholder="Enter your email" required>
-        <button type="submit" class="notify-button">Notify Me</button>
-    </form>
-    <p id="responseMessage"></p>
+    <p>Our new login page is on its way! We’re working hard to bring you a better experience.</p>
+    <div class="countdown" id="countdown">00d 00h 00m 00s</div>
+    <a href="send email.html" class="notify-button">Notify Me</a>
 </div>
 
 <script>
-    // Send email when the form is submitted
-    document.getElementById("notifyForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent default form submission
+    // Set the target date
+    const targetDate = new Date("Dec 31, 2024 23:59:59").getTime();
 
-        // Get the user's email from the input field
-        var userEmail = document.getElementById("userEmail").value;
+    // Update countdown every second
+    const countdownTimer = setInterval(function() {
+        const now = new Date().getTime();
+        const timeLeft = targetDate - now;
 
-        // Set up email parameters
-        var templateParams = {
-            to_email: userEmail,
-            from_name: "Nimbo", // Customize with your website or brand name
-            message: "Thank you for signing up! We'll notify you when our login page goes live."
-        };
+        // Time calculations
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-        // Send the email using EmailJS
-        emailjs.send("service_p7xxnze", "template_dei5moq", templateParams)
-            .then(function(response) {
-                document.getElementById("responseMessage").innerText = "Thanks for signing up! Check your email for confirmation.";
-            }, function(error) {
-                document.getElementById("responseMessage").innerText = "Oops, something went wrong. Please try again.";
-                console.log("FAILED...", error);
-            });
-    });
+        // Display result
+        document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+        // Check if countdown is over
+        if (timeLeft < 0) {
+            clearInterval(countdownTimer);
+            document.getElementById("countdown").innerHTML = "We're Live!";
+        }
+    }, 1000);
 </script>
 
 </body>
