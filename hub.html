@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wordly Game</title>
     <style>
+        /* Styling */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -12,15 +13,20 @@
             color: #333;
             margin-top: 50px;
         }
-        input {
+        header h1 {
+            font-size: 36px;
+            color: #4CAF50;
+        }
+        header p {
+            font-size: 18px;
+            color: #555;
+        }
+        select, input, button {
             padding: 10px;
             font-size: 18px;
             margin: 10px;
-            width: 200px;
         }
         button {
-            padding: 10px 20px;
-            font-size: 18px;
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -29,13 +35,12 @@
         button:hover {
             background-color: #45a049;
         }
-        #result {
-            margin-top: 20px;
+        #result, #feedback {
             font-size: 20px;
+            margin: 10px 0;
         }
         .feedback {
             font-size: 24px;
-            margin: 10px 0;
         }
         .correct {
             color: green;
@@ -49,14 +54,23 @@
         .hidden {
             display: none;
         }
+        .footer-buttons button {
+            margin: 5px;
+        }
+        .footer-buttons a {
+            color: white;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Wordly Game</h1>
-    <p>Guess the word by choosing a word length and making guesses!</p>
+    <header>
+        <h1>Wordly Game</h1>
+        <p>Guess the word by choosing a word length and making guesses!</p>
+    </header>
 
     <label for="word-length">Choose word length:</label>
-    <select id="word-length">
+    <select id="word-length" onchange="startGame()">
         <option value="4">4 letters</option>
         <option value="5">5 letters</option>
         <option value="6">6 letters</option>
@@ -72,48 +86,52 @@
     <div id="result"></div>
     <div id="feedback" class="feedback hidden"></div>
 
-    <canvas id="confetti-canvas" class="hidden"></canvas>
+    <div class="footer-buttons">
+        <button><a href="contactus.html">Contact Us</a></button>
+        <button><a href="index.html">Back to Games Hub</a></button>
+    </div>
 
     <script>
-        const wordList4 = ['tree', 'code', 'game', 'play', 'word'];
-        const wordList5 = ['apple', 'bread', 'table', 'plane', 'water'];
-        const wordList6 = ['planet', 'system', 'rocket', 'people', 'butter'];
-
+        let wordList4 = [];
+        let wordList5 = [];
+        let wordList6 = [];
         let secretWord = '';
-        let attempts = 5;
+        let attempts = 6;
+
+        async function loadWords() {
+            const response = await fetch('words.txt');
+            const text = await response.text();
+            const words = text.split(/\r?\n/);
+            words.forEach(word => {
+                if (word.length === 4) wordList4.push(word);
+                else if (word.length === 5) wordList5.push(word);
+                else if (word.length === 6) wordList6.push(word);
+            });
+        }
 
         function pickWord(wordLength) {
-            if (wordLength == 4) {
-                return wordList4[Math.floor(Math.random() * wordList4.length)];
-            } else if (wordLength == 5) {
-                return wordList5[Math.floor(Math.random() * wordList5.length)];
-            } else if (wordLength == 6) {
-                return wordList6[Math.floor(Math.random() * wordList6.length)];
-            }
+            if (wordLength == 4) return wordList4[Math.floor(Math.random() * wordList4.length)];
+            else if (wordLength == 5) return wordList5[Math.floor(Math.random() * wordList5.length)];
+            else if (wordLength == 6) return wordList6[Math.floor(Math.random() * wordList6.length)];
         }
 
         function startGame() {
             const wordLength = document.getElementById('word-length').value;
             secretWord = pickWord(wordLength);
-            attempts = 6;
+            attempts = wordLength == 4 ? 6 : wordLength == 5 ? 5 : 6;
             document.getElementById('result').innerHTML = `You have ${attempts} attempts to guess a ${wordLength}-letter word.`;
             document.getElementById('guess').value = '';
             document.getElementById('reset-btn').classList.add('hidden');
-            stopConfetti();
-            document.getElementById('confetti-canvas').classList.add('hidden');
             document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('feedback').innerHTML = '';
         }
 
         function compareWords(secretWord, guess) {
             let feedbackHTML = '';
             for (let i = 0; i < secretWord.length; i++) {
-                if (guess[i] === secretWord[i]) {
-                    feedbackHTML += `<span class="correct">${guess[i]}</span>`;
-                } else if (secretWord.includes(guess[i])) {
-                    feedbackHTML += `<span class="present">${guess[i]}</span>`;
-                } else {
-                    feedbackHTML += `<span class="incorrect">${guess[i]}</span>`;
-                }
+                if (guess[i] === secretWord[i]) feedbackHTML += `<span class="correct">${guess[i]}</span>`;
+                else if (secretWord.includes(guess[i])) feedbackHTML += `<span class="present">${guess[i]}</span>`;
+                else feedbackHTML += `<span class="incorrect">${guess[i]}</span>`;
             }
             return feedbackHTML;
         }
@@ -129,9 +147,7 @@
 
             if (guess === secretWord) {
                 document.getElementById('result').innerHTML = `Congratulations! You've guessed the word "${secretWord}" correctly!`;
-                secretWord = '';
                 document.getElementById('reset-btn').classList.remove('hidden');
-                startConfetti();
                 document.getElementById('feedback').classList.add('hidden');
             } else {
                 attempts--;
@@ -142,77 +158,17 @@
                     document.getElementById('feedback').classList.remove('hidden');
                 } else {
                     document.getElementById('result').innerHTML = `Game over! The word was "${secretWord}".`;
-                    secretWord = '';
                     document.getElementById('reset-btn').classList.remove('hidden');
                     document.getElementById('feedback').classList.add('hidden');
                 }
             }
-
             document.getElementById('guess').value = '';
         }
 
-        window.onload = startGame;
-
-        let confettiInterval;
-        function startConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            canvas.classList.remove('hidden');
-            const ctx = canvas.getContext('2d');
-            const confettiCount = 300;
-            const confetti = [];
-
-            for (let i = 0; i < confettiCount; i++) {
-                confetti.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    r: Math.random() * 5 + 2,
-                    d: Math.random() * confettiCount,
-                    color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.7)`,
-                    tilt: Math.random() * 10 - 10,
-                    tiltAngle: Math.random() * Math.PI * 2,
-                    tiltAngleIncrement: Math.random() * 0.07 + 0.05,
-                });
-            }
-
-            function drawConfetti() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                confetti.forEach((confetto, i) => {
-                    confetto.tiltAngle += confetto.tiltAngleIncrement;
-                    confetto.x += Math.sin(confetto.d) * 0.5;
-                    confetto.y += (Math.cos(confetto.d) + confetto.r / 2) * 0.5;
-                    confetto.tilt = Math.sin(confetto.tiltAngle) * 15;
-
-                    if (confetto.y > canvas.height) {
-                        confetti[i] = {
-                            ...confetto,
-                            x: Math.random() * canvas.width,
-                            y: -10,
-                        };
-                    }
-
-                    ctx.beginPath();
-                    ctx.lineWidth = confetto.r;
-                    ctx.strokeStyle = confetto.color;
-                    ctx.moveTo(confetto.x + confetto.tilt + confetto.r, confetto.y);
-                    ctx.lineTo(confetto.x + confetto.tilt, confetto.y + confetto.tilt + confetto.r);
-                    ctx.stroke();
-                });
-            }
-
-            confettiInterval = setInterval(drawConfetti, 20);
-        }
-
-        function stopConfetti() {
-            clearInterval(confettiInterval);
-            const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
+        window.onload = async function() {
+            await loadWords();
+            startGame();
+        };
     </script>
-    <br>
-    <button><a href="contactus.html">contact us</a></button>
-    <button><a href="index.html">Back to Games Hub</a></button>
 </body>
 </html>
