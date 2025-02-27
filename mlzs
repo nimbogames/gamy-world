@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Details</title>
+    <style>
+        /* Basic styles for body and background */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(45deg, #1a2a6c, #13547a, #fdbb2d, #b21f1f);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+            color: white;
+        }
+        
+        /* Animation for dynamic background gradient */
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Styling for container holding buttons */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Creates a 5-column grid */
+            gap: 15px; /* Space between buttons */
+            width: 80%;
+        }
+
+        /* Styling for individual buttons */
+        .button {
+            padding: 15px;
+            background-color: #222; /* Dark background for buttons */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); /* Adds shadow for depth */
+            transition: all 0.3s; /* Smooth transition for hover effects */
+        }
+
+        /* Button hover effect */
+        .button:hover {
+            transform: scale(1.1); /* Slightly enlarge button on hover */
+            background-color: #444; /* Change background color on hover */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Container for all the buttons -->
+<div class="container">
+    <!-- Buttons for each name, each triggering the same function with specific parameters -->
+    <button class="button" onclick="navigateToPage('Aaditya', 'admin', 'admin')">aaditya.html</button>
+    <button class="button" onclick="navigateToPage('Dron', 'admin', 'admin')">dron.html</button>
+    <button class="button" onclick="navigateToPage('Darsh', 'admin', 'admin')">darsh.html</button>
+    <button class="button" onclick="navigateToPage('Malav', 'admin', 'admin')">malav.html</button>
+    <button class="button" onclick="navigateToPage('Neal', 'admin', 'admin')">neal.html</button>
+    <button class="button" onclick="navigateToPage('Naviya', 'admin', 'admin')">naviya.html</button>
+    <button class="button" onclick="navigateToPage('Yug', 'admin', 'admin')">yug.html</button>
+    <button class="button" onclick="navigateToPage('Vaibhav', 'admin', 'admin')">vaibhav.html</button>
+    <button class="button" onclick="navigateToPage('Dishant', 'admin', 'admin')">dishant.html</button>
+    <button class="button" onclick="navigateToPage('ADMIN', 'naviya', 'naviya12341')">admin.html</button>
+</div>
+
+<script>
+    // Object to store credentials for each person
+    const credentials = {
+        Aaditya: { id: "admin", password: "admin" },
+        Dron: { id: "admin", password: "admin" },
+        Darsh: { id: "admin", password: "admin" },
+        Malav: { id: "admin", password: "admin" },
+        Neal: { id: "admin", password: "admin" },
+        Naviya: { id: "admin", password: "admin" },
+        Yug: { id: "admin", password: "admin" },
+        Vaibhav: { id: "admin", password: "admin" },
+        Dishant: { id: "admin", password: "admin" },
+        ADMIN: { id: "naviya", password: "naviya12341" },
+    };
+
+    /**
+     * Function to validate credentials and navigate to the respective page.
+     * @param {string} person - The key representing the person's credentials.
+     * @param {string} id - The expected ID for the person.
+     * @param {string} password - The expected password for the person.
+     */
+    function navigateToPage(person, id, password) {
+        // Prompt user to enter ID
+        const enteredId = prompt("Enter ID:");
+        // Prompt user to enter password
+        const enteredPassword = prompt("Enter Password:");
+
+        // Check if entered credentials match the stored ones
+        if (enteredId === credentials[person].id && enteredPassword === credentials[person].password) {
+            // Redirect to the person's page if credentials are valid
+            window.location.href = `${person}.html`;
+        } else {
+            // Show an error message if credentials are invalid
+            alert("Invalid ID or Password. Try again.");
+        }
+    }
+</script>
+
+</body>
+</html>
