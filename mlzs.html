@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Person Details</title>
     <style>
-        /* Basic styles for body and background */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -20,25 +19,22 @@
             color: white;
         }
         
-        /* Animation for dynamic background gradient */
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Styling for container holding buttons */
         .container {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* Creates a 5-column grid */
-            gap: 15px; /* Space between buttons */
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
             width: 80%;
         }
 
-        /* Styling for individual buttons */
         .button {
             padding: 15px;
-            background-color: #222; /* Dark background for buttons */
+            background-color: #222;
             color: white;
             border: none;
             border-radius: 10px;
@@ -46,36 +42,93 @@
             text-align: center;
             font-size: 16px;
             font-weight: bold;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); /* Adds shadow for depth */
-            transition: all 0.3s; /* Smooth transition for hover effects */
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
         }
 
-        /* Button hover effect */
         .button:hover {
-            transform: scale(1.1); /* Slightly enlarge button on hover */
-            background-color: #444; /* Change background color on hover */
+            transform: scale(1.1);
+            background-color: #444;
         }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: black;
+        }
+
+        .modal h2 {
+            margin-bottom: 15px;
+            color: #b21f1f;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal button {
+            margin-top: 10px;
+            padding: 10px;
+            background: #b21f1f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal button:hover {
+            background: #8e1717;
+        }
+
+        .modal .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
 
-<!-- Container for all the buttons -->
 <div class="container">
-    <!-- Buttons for each name, each triggering the same function with specific parameters -->
-    <button class="button" onclick="navigateToPage('Aaditya', 'admin', 'admin')">aaditya.</button>
-    <button class="button" onclick="navigateToPage('Dron', 'admin', 'admin')">dron</button>
-    <button class="button" onclick="navigateToPage('Darsh', 'admin', 'admin')">darsh</button>
-    <button class="button" onclick="navigateToPage('Malav', 'admin', 'admin')">malav</button>
-    <button class="button" onclick="navigateToPage('Neal', 'admin', 'admin')">neal</button>
-    <button class="button" onclick="navigateToPage('Naviya', 'admin', 'admin')">naviya</button>
-    <button class="button" onclick="navigateToPage('Yug', 'admin', 'admin')">yug</button>
-    <button class="button" onclick="navigateToPage('Vaibhav', 'admin', 'admin')">vaibhav</button>
-    <button class="button" onclick="navigateToPage('Dishant', 'admin', 'admin')">dishant</button>
-    <button class="button" onclick="navigateToPage('ADMIN', 'naviya', 'naviya12341')">admin</button>
+    <button class="button" onclick="openModal('Aaditya')">aaditya.</button>
+    <button class="button" onclick="openModal('Dron')">dron</button>
+    <button class="button" onclick="openModal('Darsh')">darsh</button>
+    <button class="button" onclick="openModal('Malav')">malav</button>
+    <button class="button" onclick="openModal('Neal')">neal</button>
+    <button class="button" onclick="openModal('Naviya')">naviya</button>
+    <button class="button" onclick="openModal('Yug')">yug</button>
+    <button class="button" onclick="openModal('Vaibhav')">vaibhav</button>
+    <button class="button" onclick="openModal('Dishant')">dishant</button>
+    <button class="button" onclick="openModal('ADMIN')">admin</button>
+</div>
+
+<!-- Modal for Login -->
+<div class="modal" id="loginModal">
+    <h2>Team Nimbo Says</h2>
+    <input type="text" id="userId" placeholder="Enter ID">
+    <input type="password" id="userPassword" placeholder="Enter Password">
+    <p class="error" id="errorMessage"></p>
+    <button onclick="validateLogin()">Login</button>
 </div>
 
 <script>
-    // Object to store credentials for each person
+    let selectedPerson = "";
+
     const credentials = {
         Aaditya: { id: "admin", password: "admin" },
         Dron: { id: "admin", password: "admin" },
@@ -89,25 +142,20 @@
         ADMIN: { id: "naviya", password: "naviya12341" },
     };
 
-    /**
-     * Function to validate credentials and navigate to the respective page.
-     * @param {string} person - The key representing the person's credentials.
-     * @param {string} id - The expected ID for the person.
-     * @param {string} password - The expected password for the person.
-     */
-    function navigateToPage(person, id, password) {
-        // Prompt user to enter ID
-        const enteredId = prompt("Enter ID:");
-        // Prompt user to enter password
-        const enteredPassword = prompt("Enter Password:");
+    function openModal(person) {
+        selectedPerson = person;
+        document.getElementById("loginModal").style.display = "block";
+        document.getElementById("errorMessage").innerText = "";
+    }
 
-        // Check if entered credentials match the stored ones
-        if (enteredId === credentials[person].id && enteredPassword === credentials[person].password) {
-            // Redirect to the person's page if credentials are valid
-            window.location.href = `${person}.html`;
+    function validateLogin() {
+        const enteredId = document.getElementById("userId").value;
+        const enteredPassword = document.getElementById("userPassword").value;
+
+        if (enteredId === credentials[selectedPerson].id && enteredPassword === credentials[selectedPerson].password) {
+            window.location.href = `${selectedPerson}.html`;
         } else {
-            // Show an error message if credentials are invalid
-            alert("Invalid ID or Password. Try again.");
+            document.getElementById("errorMessage").innerText = "Invalid ID or Password. Try again.";
         }
     }
 </script>
