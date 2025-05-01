@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Choose Game Mode</title>
+  <style>
+    /* full-screen dark background */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #121212;
+      color: #E0E0E0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    /* center container */
+    .selector {
+      text-align: center;
+    }
+    .selector h1 {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+    /* button/link styles */
+    .selector a, .selector button {
+      display: block;
+      width: 220px;
+      margin: 0.8rem auto;
+      padding: 0.8rem 0;
+      font-size: 1rem;
+      background: #1F1F1F;
+      color: #E0E0E0;
+      border: 2px solid #333;
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .selector a:hover, .selector button:hover {
+      background: #333;
+      transform: translateY(-2px);
+    }
+    .selector a:active, .selector button:active {
+      background: #1A1A1A;
+      transform: translateY(0);
+    }
+    .selector .mp-link {
+      display: block;
+      width: 220px;
+      margin: 0.8rem auto;
+      padding: 0.8rem 0;
+      font-size: 1rem;
+      background: #1F1F1F;
+      color: #E0E0E0;
+      border: 2px solid #333;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+}
+.selector .mp-link:hover {
+   background: #333;
+  transform: translateY(-2px);
+}
+.selector .mp-link:active {
+  background: #1A1A1A;
+  transform: translateY(0);
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="selector">
+    <h1>Select Game Mode</h1>
+    <button onclick="location.href='tictaktoe.html'">▶️ Play vs AI</button>
+    <button onclick="a href="https://5dc2-103-167-53-22.ngrok-free.app " class="mp-link">🌐 Play Multiplayer</a></button>
+  </div>
+
+</body>
+</html>
