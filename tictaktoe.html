@@ -17,8 +17,7 @@
       margin: 0;
       padding: 1rem;
       transition: background 0.3s ease;
-}
-
+    }
     .light-theme {
       background: #f9fafb;
       color: #1e293b;
@@ -109,76 +108,45 @@
         font-size: 1.5rem;
       }
     }
-    .board-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  height: 100%;
-}
-
   </style>
 </head>
 <body>
-  <!-- MODE SELECTION SCREEN -->
-  <div id="startScreen" style="text-align: center;">
-    <h1>Choose Game Mode</h1>
-    <button onclick="startAIGame()">Play vs AI</button>
-    <button onclick="redirectMultiplayer()">Play Multiplayer</button>
+  <h1>Tic Tac Toe</h1>
+  <div class="settings">
+    <input type="text" id="playerX" placeholder="Player X" value="Player X">
+    <input type="text" id="playerO" placeholder="Player O / AI" value="AI">
+    <select id="mode">
+      <option value="1">1 Player</option>
+      <option value="2">2 Player</option>
+    </select>
+    <select id="difficulty">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard" selected>Hard</option>
+    </select>
+    <button onclick="toggleTheme()">Toggle Light/Dark</button>
   </div>
-
-  <!-- GAME UI HIDDEN INITIALLY -->
-  <div id="gameContainer" style="display:none;">
-    <h1>Tic Tac Toe</h1>
-    <div class="settings">
-      <input type="text" id="playerX" placeholder="Player X" value="Player X">
-      <input type="text" id="playerO" placeholder="Player O / AI" value="AI">
-      <select id="mode">
-        <option value="1">1 Player</option>
-        <option value="2">2 Player</option>
-      </select>
-      <select id="difficulty">
-        <option value="easy">Easy</option>
-        <option value="medium">Medium</option>
-        <option value="hard" selected>Hard</option>
-      </select>
-      <button onclick="toggleTheme()">Toggle Light/Dark</button>
-    </div>
-    <div class="scoreboard">
-      <span id="scoreboard">Score - X: 0 | O: 0</span>
-    </div>
-    <div class="board" id="board"></div>
-    <div class="controls">
-      <button onclick="restartGame()">Restart</button>
-    </div>
-    <div class="modal" id="modal">
-      <div class="modal-content">
-        <h2 id="modalText"></h2>
-        <button onclick="closeModal()">OK</button>
-      </div>
-    </div>
-    <div class="history" id="history">
-      <h3>Move History</h3>
-      <ul id="historyList"></ul>
-    </div>
-    <audio id="winSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8abcbf2f26.mp3?filename=success-fanfare-trumpets-6185.mp3"></audio>
-    <audio id="drawSound" src="https://cdn.pixabay.com/download/audio/2022/06/15/audio_f80363d53f.mp3?filename=click-124467.mp3"></audio>
-    <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_003c400db9.mp3?filename=button-click-124467.mp3"></audio>
+  <div class="scoreboard">
+    <span id="scoreboard">Score - X: 0 | O: 0</span>
   </div>
-  <div class="board-wrapper">
   <div class="board" id="board"></div>
-</div>
-
+  <div class="controls">
+    <button onclick="restartGame()">Restart</button>
+  </div>
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2 id="modalText"></h2>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>
+  <div class="history" id="history">
+    <h3>Move History</h3>
+    <ul id="historyList"></ul>
+  </div>
+  <audio id="winSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8abcbf2f26.mp3?filename=success-fanfare-trumpets-6185.mp3"></audio>
+  <audio id="drawSound" src="https://cdn.pixabay.com/download/audio/2022/06/15/audio_f80363d53f.mp3?filename=click-124467.mp3"></audio>
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_003c400db9.mp3?filename=button-click-124467.mp3"></audio>
   <script>
-    function startAIGame() {
-      document.getElementById('startScreen').style.display = 'none';
-      document.getElementById('gameContainer').style.display = 'block';
-      renderBoard();
-    }
-
-    function redirectMultiplayer() {
-      window.location.href = "https://5dc2-103-167-53-22.ngrok-free.app";
-    }
     const boardEl = document.getElementById('board');
     const modal = document.getElementById('modal');
     const modalText = document.getElementById('modalText');
@@ -211,7 +179,7 @@
       const difficulty = document.getElementById('difficulty').value;
       if (board[index] || isGameOver) return;
       board[index] = currentPlayer;
-      history.push(`Player ${currentPlayer} moved to cell ${index + 1}`);
+      history.push(Player ${currentPlayer} moved to cell ${index + 1});
       updateHistory();
       clickSound.play();
       renderBoard();
@@ -234,7 +202,7 @@
         move = getBestMove("O");
       }
       board[move] = "O";
-      history.push(`AI moved to cell ${move + 1}`);
+      history.push(AI moved to cell ${move + 1});
       updateHistory();
       clickSound.play();
       renderBoard();
@@ -321,7 +289,7 @@
           scores[board[a]]++;
           updateScoreboard();
           winSound.play();
-          showModal(`${getPlayerName(board[a])} wins!`);
+          showModal(${getPlayerName(board[a])} wins!);
           return true;
         }
       }
@@ -335,7 +303,7 @@
     }
 
     function updateScoreboard() {
-      scoreBoard.textContent = `Score - X: ${scores.X} | O: ${scores.O}`;
+      scoreBoard.textContent = Score - X: ${scores.X} | O: ${scores.O};
     }
 
     function updateHistory() {
@@ -377,4 +345,4 @@
     renderBoard();
   </script>
 </body>
-</html>
+</html> 
